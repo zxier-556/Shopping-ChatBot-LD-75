@@ -34,7 +34,7 @@ void clearBuffer();
 void showMenu();
 void addToCart(char *name, int price);
 void removeItems();
-void checkOut();
+int checkOut();
 void searchInventory();
 void displayByCategory(char *catName);
 
@@ -67,9 +67,10 @@ void showMenu() {
         else if (choice == 5) searchInventory();
         else if (choice == 6 && cartCount > 0) removeItems();
         else if (choice == 7 && cartCount > 0) {
-            checkOut();
+            if (checkOut()) {
             break;
         }
+    }
         else if (choice == 0) break;
         else printf("Invalid option!\n");
     }
@@ -168,7 +169,7 @@ void removeItems() {
     }
 }
 
-void checkOut() {
+int checkOut() {
     int total = 0;
     printf("\n--- FINAL RECEIPT FOR %s ---\n", currentUser);
     for (int i = 0; i < cartCount; i++) {
@@ -179,10 +180,18 @@ void checkOut() {
     printf("--------------------\n");
     printf("TOTAL FEES: $%d\n", total);
     printf("Confirm purchase? (1-Yes, 0-No): ");
+    
     int confirm;
     scanf("%d", &confirm);
-    if (confirm) printf("Receipt Printed. Thank you!\n");
-    else printf("Checkout cancelled.\n");
+    clearBuffer(); // Keep the buffer clean
+
+    if (confirm) {
+        printf("Receipt Printed. Thank you!\n");
+        return 1; // Return 1 to indicate success/exit
+    } else {
+        printf("Checkout cancelled. Returning to menu...\n");
+        return 0; // Return 0 to stay in the menu
+    }
 }
 
 void clearBuffer() { // Used to prevent readings of leftover characters
